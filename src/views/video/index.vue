@@ -1,5 +1,5 @@
 <template>
-  <div>首页模块</div>
+  <div>视频模块</div>
 </template>
 
 <script>

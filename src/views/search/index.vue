@@ -1,5 +1,5 @@
 <template>
-  <div>首页模块</div>
+  <div>搜索模块</div>
 </template>
 
 <script>

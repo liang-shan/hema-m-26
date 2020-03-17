@@ -1,5 +1,5 @@
 <template>
-  <div>首页模块</div>
+  <div>用户模块</div>
 </template>
 
 <script>
