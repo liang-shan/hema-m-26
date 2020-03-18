@@ -4,6 +4,7 @@
 import axios from 'axios'
 import JSONBig from 'json-bigint' // 引入大数字插件
 import store from '@store' // 引入大数字插件
+import router from './router'
 
 const instance = axios.create({ // 相当于new了一个新的实例
   // 首先要设置一下基地址
@@ -41,8 +42,22 @@ instance.interceptors.response.use(function (response) {
     return response.data
   }
 }, function (error) {
-  // 直接返回失败
-  return Promise.reject(error) // 返回执行链的 catch
-})
+  // 响应拦截器只要是401  就是token的问题  就要处理token
+  if (error.response && error.response.status === 401) {
+    if (store.state.user.refresh_token) {
+      // 如果有就说明你有救命的稻草
 
+    } else {
+      // 没有直接跳到登入页面
+      // 从A页面实效的返回到登入页面成功之后还想回到A页面
+      router.push({
+        path: '/login',
+        query: {
+          // 需要传递的query参数
+          redirectUrl: router.currentRoute.fullPath // 表示登录页需要跳转的地址
+        }
+      })
+    }
+  }
+})
 export default instance
