@@ -3,8 +3,8 @@
 
 import axios from 'axios'
 import JSONBig from 'json-bigint' // 引入大数字插件
-import store from '@store'
-import router from './router'
+import store from '../store'
+import router from '../router'
 
 const instance = axios.create({ // 相当于new了一个新的实例
   // 首先要设置一下基地址
