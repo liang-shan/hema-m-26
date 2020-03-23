@@ -1,53 +1,29 @@
 <template>
   <div class="scroll-wrapper">
     <van-pull-refresh v-model="downLoading" @refresh="onRefresh" :success-text="refreshSuccessText">
+      <!-- 上拉加载 -->
       <van-list v-model="upLoading" :finished="finished" @load="onLoad">
         <van-cell-group>
           <van-cell
             v-for="item in articles"
-            :key="item"
+            :key="item.art_id.toString()"
 
           >
             <!-- 三张图 -->
             <div class="article_item">
-              <h3 class="van-ellipsis">PullRefresh下拉刷新PullRefresh下拉刷新下拉刷新下拉刷新</h3>
-              <div class="img_box">
-                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+              <h3 class="van-ellipsis">{{item.title}}</h3>
+              <div class="img_box" v-if="item.cover.type===3">
+                <van-image class="w33" fit="cover" :src="item.cover.images[0]" />
+                <van-image class="w33" fit="cover" :src="item.cover.images[1]" />
+                <van-image class="w33" fit="cover" :src="item.cover.images[2]" />
+              </div>
+               <div class="img_box" v-if="item.cover.type===1">
+                <van-image class="w33" fit="cover" :src="item.cover.images[0]" />
               </div>
               <div class="info_box">
-                <span>你像一阵风</span>
-                <span>8评论</span>
-                <span>10分钟前</span>
-                <span class="close">
-                  <van-icon name="cross"></van-icon>
-                </span>
-              </div>
-
-              <!-- 一张图 -->
-
-              <h3 class="van-ellipsis">PullRefresh下拉刷新PullRefresh下拉刷新下拉刷新下拉刷新</h3>
-              <div class="img_box">
-                <van-image class="w100" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-              </div>
-              <div class="info_box">
-                <span>你像一阵风</span>
-                <span>8评论</span>
-                <span>10分钟前</span>
-                <span class="close">
-                  <van-icon name="cross"></van-icon>
-                </span>
-              </div>
-
-              <!-- 无图 -->
-
-              <h3 class="van-ellipsis">PullRefresh下拉刷新PullRefresh下拉刷新下拉刷新下拉刷新</h3>
-
-              <div class="info_box">
-                <span>你像一阵风</span>
-                <span>8评论</span>
-                <span>10分钟前</span>
+                <span>{{item.aut_name}}</span>
+                <span>{{item.comm_count}}</span>
+                <span>{{item.pubdate}}</span>
                 <span class="close">
                   <van-icon name="cross"></van-icon>
                 </span>
@@ -61,7 +37,9 @@
 </template>
 
 <script>
+import { getArticles } from '../../../api/article'
 export default {
+
   name: 'article-list',
   data () {
     return {
@@ -69,19 +47,41 @@ export default {
       upLoading: false, // 是否加载数据
       finished: false, // 加载是否完成
       downLoading: false,
-      refreshSuccessText: '更新成功'
+      refreshSuccessText: '更新成功',
+      timestamp: null// 专门用来放时间戳
     }
   },
+  props: {
+    channel_id: {
+      required: false, // 要求必须传该props属性 否则报错
+      type: Number, // 类型必须是定义的类型
+      default: null// 默认值
+    }
+
+  },
   methods: {
-    onLoad () {
+    async onLoad () {
       // 加载方法
       //   console.log('开始加载数据')
       //   alert('开始加载数据')
 
-      const arr = Array.from(Array(10), (value, index) => index + 1)
-      this.articles.push(...arr) // 把生成的数据追加到末尾
+      // const arr = Array.from(Array(10), (value, index) => index + 1)
+      // this.articles.push(...arr) // 把生成的数据追加到末尾
+      // this.upLoading = false
 
+      // -----------------------------开始真数据
+      const data = await getArticles({ channel_id: this.channel_id, timestamp: this.timestamp || Date.now() })
+      // console.log(data)
+
+      this.articles.push(...data.results)
+      // 关闭加载状态
       this.upLoading = false
+      if (data.pre_timestamp) {
+        // 如果有
+        this.timestamp = data.pre_timestamp
+      } else {
+        this.finished = true // 没有数据了
+      }
     },
     onRefresh () {
       // 触发下拉刷新
@@ -96,6 +96,7 @@ export default {
         this.refreshSuccessText = `更新了${arr.length}条数据`
       }, 1000)
     }
+
   }
 }
 </script>
