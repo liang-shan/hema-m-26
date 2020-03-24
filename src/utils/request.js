@@ -87,5 +87,6 @@ instance.interceptors.response.use(function (response) {
       router.push(path)
     }
   }
+  return Promise.reject(error) // 返回执行链的 catch
 })
 export default instance

@@ -83,18 +83,36 @@ export default {
         this.finished = true // 没有数据了
       }
     },
-    onRefresh () {
+
+    async  onRefresh () {
+      // debugger
       // 触发下拉刷新
-      console.log('下拉刷新')
-      setTimeout(() => {
-        const arr = Array.from(
-          Array(10),
-          (value, index) => '追加' + (index + 1)
-        )
-        this.articles.unshift(...arr) // 将数据添加到队首
-        this.downLoading = false // 关掉下拉状态
-        this.refreshSuccessText = `更新了${arr.length}条数据`
-      }, 1000)
+      // console.log('下拉刷新')
+      // setTimeout(() => {
+      //   const arr = Array.from(
+      //     Array(10),
+      //     (value, index) => '追加' + (index + 1)
+      //   )
+      //   this.articles.unshift(...arr) // 将数据添加到队首
+      //   this.downLoading = false // 关掉下拉状态
+      //   this.refreshSuccessText = `更新了${arr.length}条数据`
+      // }, 1000)
+      // ------------------------------开始真是数据的加载
+      const data = await getArticles({ channel_id: this.channel_id, timestamp: Date.now() })
+      // 求来数据此时需要关闭下拉加载的状态
+      // console.log(data)
+
+      this.downLoading = false
+      if (data.results.length) {
+        // 有求来数据
+        this.articles = data.results
+        this.finished = true // 没有数据了
+        this.timestamp = data.pre_timestamp
+        this.refreshSuccessText = `更新了${data.results.length}条数据`
+      } else {
+        // 没有求来数据
+        this.refreshSuccessText = '已是最新数据'
+      }
     }
 
   }

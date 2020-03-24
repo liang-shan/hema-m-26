@@ -34,8 +34,8 @@ export default {
     return {
       // 数据的双向绑定
       loginForm: {
-        mobile: '13911111111',
-        code: '246810'
+        mobile: '',
+        code: ''
       },
       // 错误信息的绑定
       errMsg: {
@@ -73,17 +73,25 @@ export default {
       return true
     },
     async login () {
-      if (this.checkMobile() && this.checkCode()) {
+      const abc = this.checkMobile()
+      const def = this.checkCode()
+
+      if (abc && def) {
         // alert('登入成功')
+        try {
+          const result = await login(this.loginForm)
+          console.log(result)
 
-        const result = await login(this.loginForm)
-        console.log(result)
-
-        // 里边有新的token  和reflsh_token  更新token
-        this.updateToken({ user: result })
-        // this.$gnotify({ type: 'success', message: '登录成功' })
-        const { redirectUrl } = this.$route.query // 解构当前的路由信息
-        this.$router.push(redirectUrl || '/') // 短路表达式
+          // 里边有新的token  和reflsh_token  更新token
+          this.updateToken({ user: result })
+          this.$notify({ type: 'success', message: '登录成功' })
+          const { redirectUrl } = this.$route.query // 解构当前的路由信息
+          this.$router.push(redirectUrl || '/') // 短路表达式
+        } catch (error) {
+          // this.$notify({ message: '用户名或者验证码错误', duration: 800 })
+          alert('用户名或者验证码错误')
+          // 这里我们要抖一个小机灵
+        }
       }
     }
   }
