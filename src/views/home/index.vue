@@ -10,21 +10,28 @@
     <span class="bar_btn">
       <van-icon name="wap-nav" />
     </span>
+    <!-- 弹层 -->
+    <van-popup :style="{ width: '80%' }" v-model="showMoreAction">
+      <MoreAction ></MoreAction>
+    </van-popup>
   </div>
 </template>
 
 <script>
+import MoreAction from './components/more-action'
 import articleList from './components/article-list'
 import { getMyChennels } from '../../api/channels'
 export default {
   name: 'home', // devtools查看组件时  可以看到 对应的name名称
   components: {
-    articleList
+    articleList,
+    MoreAction
   },
   data () {
     return {
       activeIndex: 0,
-      chennels: []
+      chennels: [],
+      showMoreAction: false // 控制反馈组件显示隐藏
 
     }
   },
@@ -36,6 +43,7 @@ export default {
     }
 
   },
+
   created () {
     this.getMyChennels()
   }

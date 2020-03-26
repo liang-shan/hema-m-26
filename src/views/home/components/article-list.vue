@@ -13,18 +13,18 @@
             <div class="article_item">
               <h3 class="van-ellipsis">{{item.title}}</h3>
               <div class="img_box" v-if="item.cover.type===3">
-                <van-image class="w33" fit="cover" :src="item.cover.images[0]" />
-                <van-image class="w33" fit="cover" :src="item.cover.images[1]" />
-                <van-image class="w33" fit="cover" :src="item.cover.images[2]" />
+                <van-image lazy-load class="w33" fit="cover" :src="item.cover.images[0]" />
+                <van-image lazy-load class="w33" fit="cover" :src="item.cover.images[1]" />
+                <van-image lazy-load class="w33" fit="cover" :src="item.cover.images[2]" />
               </div>
                <div class="img_box" v-if="item.cover.type===1">
-                <van-image class="w33" fit="cover" :src="item.cover.images[0]" />
+                <van-image lazy-load class="w33" fit="cover" :src="item.cover.images[0]" />
               </div>
               <div class="info_box">
                 <span>{{item.aut_name}}</span>
                 <span>{{item.comm_count}}</span>
-                <span>{{item.pubdate}}</span>
-                <span class="close">
+                <span>{{item.pubdate | relTime}}</span>
+                <span class="close" v-if="user.token">
                   <van-icon name="cross"></van-icon>
                 </span>
               </div>
@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import { getArticles } from '../../../api/article'
 export default {
 
@@ -60,6 +62,7 @@ export default {
 
   },
   methods: {
+    // 上拉加载
     async onLoad () {
       // 加载方法
       //   console.log('开始加载数据')
@@ -83,8 +86,11 @@ export default {
         this.finished = true // 没有数据了
       }
     },
-
+    // 下拉刷新
     async  onRefresh () {
+      // 需要弄一个睡眠函数延长请求次数
+      await this.$sleep(800)
+
       // debugger
       // 触发下拉刷新
       // console.log('下拉刷新')
@@ -115,6 +121,9 @@ export default {
       }
     }
 
+  },
+  computed: {
+    ...mapState(['user'])
   }
 }
 </script>
