@@ -4,7 +4,7 @@
       <van-tab :title="item.name" v-for="item in chennels" :key="item.id">
         <!-- 这里注意 这个div设置了滚动条 目的是 给后面做 阅读记忆 留下伏笔 -->
         <!-- 阅读记忆 => 看文章看到一半 滑到中部 去了别的页面 当你回来时 文章还在你看的位置 -->
-        <articleList :channel_id="item.id"></articleList>
+        <articleList @showAction="openAction" :channel_id="item.id"></articleList>
       </van-tab>
     </van-tabs>
     <span class="bar_btn">
@@ -40,6 +40,9 @@ export default {
       const data = await getMyChennels()
       this.chennels = data.channels
       // console.log(this.chennels)
+    },
+    openAction () {
+      this.showMoreAction = true
     }
 
   },
