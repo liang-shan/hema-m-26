@@ -24,7 +24,7 @@
                 <span>{{item.aut_name}}</span>
                 <span>{{item.comm_count}}</span>
                 <span>{{item.pubdate | relTime}}</span>
-                <span  @click="$emit('showAction')" class="close" v-if="user.token">
+                <span  @click="$emit('showAction',item.art_id.toString())" class="close" v-if="user.token">
                   <van-icon name="cross"></van-icon>
                 </span>
               </div>
@@ -38,8 +38,10 @@
 
 <script>
 import { mapState } from 'vuex'
+import eventBus from '../../utils/eventbus'
 
 import { getArticles } from '../../../api/article'
+
 export default {
 
   name: 'article-list',
@@ -121,6 +123,23 @@ export default {
       }
     }
 
+  },
+  created () {
+    eventBus.$on('delArticle', (channelId, artId) => {
+      // 找到数据并删除找到对应的channelId
+      if (this.channel_id === channelId) {
+        // 这时候要删除articles里的数据了
+        // 先找到
+        const index = this.articles.findIndex(item => item.art_id.toString() === artId)
+        if (index > -1) {
+          this.articles.splice(index, 1)
+        }
+        // 删光数据怎么办在重新加载
+        if (this.articles.length === 0) {
+          this.onLoad()
+        }
+      }
+    })
   },
   computed: {
     ...mapState(['user'])

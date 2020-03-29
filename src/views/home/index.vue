@@ -12,7 +12,7 @@
     </span>
     <!-- 弹层 -->
     <van-popup :style="{ width: '80%' }" v-model="showMoreAction">
-      <MoreAction ></MoreAction>
+      <MoreAction @dislike="dislikeArticle"></MoreAction>
     </van-popup>
   </div>
 </template>
@@ -20,7 +20,10 @@
 <script>
 import MoreAction from './components/more-action'
 import articleList from './components/article-list'
+import eventBus from '../../utils/eventbus'
+
 import { getMyChennels } from '../../api/channels'
+import { dislikeArticles } from '../../api/article'
 export default {
   name: 'home', // devtools查看组件时  可以看到 对应的name名称
   components: {
@@ -31,8 +34,8 @@ export default {
     return {
       activeIndex: 0,
       chennels: [],
-      showMoreAction: false // 控制反馈组件显示隐藏
-
+      showMoreAction: false, // 控制反馈组件显示隐藏
+      articleId: null // 不感兴趣接口需要文章id
     }
   },
   methods: {
@@ -41,16 +44,34 @@ export default {
       this.chennels = data.channels
       // console.log(this.chennels)
     },
-    openAction () {
+    // 打开弹层的事件
+    openAction (artId) {
       this.showMoreAction = true
+      this.articleId = artId
+    },
+    async dislikeArticle () { // 不喜欢并要删除对应的数据(article-list里的数据)
+      try {
+        await dislikeArticles({ target: this.articleId })
+        // 成功后弹出""操作成功"
+        this.$gnotify({
+          type: 'success',
+          message: '操作成功'
+        })
+        // 删除不喜欢的数据
+        // 用事件公交车广播一个删除事件eventbus.$emit(),
+        // 还要告诉要在哪个频道也就是当前激活的频道id,this.chennels[this.activeIndex].id,删除哪个文章哪个文章this.articleId,把事件传过去,把数据也传过去
+        eventBus.$emit('delArticle', this.chennels[this.activeIndex].id, this.articleId)
+      } catch (error) {
+        this.$gnotify({
+          message: '操作失败'
+        })
+      }
     }
-
   },
 
   created () {
     this.getMyChennels()
   }
-
 }
 </script>
 
