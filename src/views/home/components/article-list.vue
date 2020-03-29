@@ -38,7 +38,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import eventBus from '../../utils/eventbus'
+import eventBus from '../../../utils/eventbus'
 
 import { getArticles } from '../../../api/article'
 
