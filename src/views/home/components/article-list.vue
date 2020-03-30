@@ -133,6 +133,7 @@ export default {
         const index = this.articles.findIndex(item => item.art_id.toString() === artId)
         if (index > -1) {
           this.articles.splice(index, 1)
+          // 并关掉弹层在父组件中关
         }
         // 删光数据怎么办在重新加载
         if (this.articles.length === 0) {

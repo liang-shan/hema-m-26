@@ -60,7 +60,11 @@ export default {
         // 删除不喜欢的数据
         // 用事件公交车广播一个删除事件eventbus.$emit(),
         // 还要告诉要在哪个频道也就是当前激活的频道id,this.chennels[this.activeIndex].id,删除哪个文章哪个文章this.articleId,把事件传过去,把数据也传过去
+
         eventBus.$emit('delArticle', this.chennels[this.activeIndex].id, this.articleId)
+        // 关闭弹层
+
+        this.showMoreAction = false
       } catch (error) {
         this.$gnotify({
           message: '操作失败'
