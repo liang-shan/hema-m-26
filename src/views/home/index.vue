@@ -7,47 +7,62 @@
         <articleList @showAction="openAction" :channel_id="item.id"></articleList>
       </van-tab>
     </van-tabs>
-    <span class="bar_btn">
-      <van-icon name="wap-nav" />
+    <span @click="openChannelEdit" class="bar_btn">
+      <van-icon  name="wap-nav" />
     </span>
-    <!-- 弹层 -->
+    <!-- 举报弹层 -->
     <van-popup :style="{ width: '80%' }" v-model="showMoreAction">
       <MoreAction @dislike="dislikeArticle"></MoreAction>
     </van-popup>
+    <!-- 频道管理弹层 -->
+    <van-action-sheet :round="yuanJ" v-model="showChannelEdit" title="标题">
+         <channelEdit :chennels="chennels"></channelEdit>
+    </van-action-sheet>
   </div>
 </template>
 
 <script>
-import MoreAction from './components/more-action'
-import articleList from './components/article-list'
+import MoreAction from './components/more-action'// 弹层喜欢不喜欢组件
+import articleList from './components/article-list'// 文章组件
+import channelEdit from './components/channel-edit'// 频道编辑组件
+
 import eventBus from '../../utils/eventbus'
 
 import { getMyChennels } from '../../api/channels'
 import { dislikeArticles } from '../../api/article'
+
 export default {
   name: 'home', // devtools查看组件时  可以看到 对应的name名称
   components: {
     articleList,
-    MoreAction
+    MoreAction,
+    channelEdit
+
   },
   data () {
     return {
       activeIndex: 0,
       chennels: [],
       showMoreAction: false, // 控制反馈组件显示隐藏
-      articleId: null // 不感兴趣接口需要文章id
+      articleId: null, // 不感兴趣接口需要文章id
+      showChannelEdit: false, // 频道编辑的显示与否
+      yuanJ: false
     }
   },
   methods: {
     async getMyChennels () {
       const data = await getMyChennels()
       this.chennels = data.channels
-      // console.log(this.chennels)
+      // console.log(data)
     },
     // 打开弹层的事件
     openAction (artId) {
       this.showMoreAction = true
       this.articleId = artId
+    },
+    // 打开频道显示界面
+    openChannelEdit () {
+      this.showChannelEdit = true
     },
     async dislikeArticle () { // 不喜欢并要删除对应的数据(article-list里的数据)
       try {
@@ -80,6 +95,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.van-action-sheet {
+  max-height: 100%;
+  height: 100%;
+  .van-action-sheet__header {
+    background: #3296fa;
+    color: #fff;
+    .van-icon-close {
+      color: #fff;
+    }
+  }
+}
 .van-tabs {
   height: 100%;
   display: flex;

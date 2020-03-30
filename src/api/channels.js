@@ -7,3 +7,8 @@ export function getMyChennels () {
     url: '/user/channels'
   })
 }
+export function getAllChennels () {
+  return request({
+    url: '/channels'
+  })
+}
