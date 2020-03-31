@@ -16,7 +16,7 @@
     </van-popup>
     <!-- 频道管理弹层 -->
     <van-action-sheet :round="yuanJ" v-model="showChannelEdit" title="标题">
-         <channelEdit :chennels="chennels"></channelEdit>
+         <channelEdit @selectChannel="selectChannel" :chennels="chennels"></channelEdit>
     </van-action-sheet>
   </div>
 </template>
@@ -50,6 +50,11 @@ export default {
     }
   },
   methods: {
+    selectChannel (index) {
+      // alert(index)
+      this.activeIndex = index//  activeIndex这玩意只接受index,必须根据id找到索引
+      this.showChannelEdit = false
+    },
     async getMyChennels () {
       const data = await getMyChennels()
       this.chennels = data.channels
@@ -86,6 +91,7 @@ export default {
         })
       }
     }
+
   },
 
   created () {
