@@ -9,7 +9,7 @@
       </div>
       <van-grid class="van-hairline--left">
         <van-grid-item v-for="(item,index) in chennels" :key="item.id">
-          <span @click="$emit('selectChannel',index)" class="f12">{{item.name}}</span>
+          <span :class="{red: index === activeIndex}"  @click="$emit('selectChannel',index)" class="f12">{{item.name}}</span>
           <van-icon class="btn" name="cross"></van-icon>
         </van-grid-item>
       </van-grid>
@@ -40,6 +40,11 @@ export default {
       required: true,
       type: Array,
       default: () => []
+    },
+    activeIndex: {
+      required: true, // 表示必须传递channels
+      type: Number, // 指定type是number类型
+      default: 0
     }
   },
   methods: {

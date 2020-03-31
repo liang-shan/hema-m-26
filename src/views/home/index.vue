@@ -16,7 +16,7 @@
     </van-popup>
     <!-- 频道管理弹层 -->
     <van-action-sheet :round="yuanJ" v-model="showChannelEdit" title="标题">
-         <channelEdit @selectChannel="selectChannel" :chennels="chennels"></channelEdit>
+         <channelEdit @selectChannel="selectChannel" :activeIndex="activeIndex" :chennels="chennels"></channelEdit>
     </van-action-sheet>
   </div>
 </template>
