@@ -19,14 +19,32 @@ export function getMyChennels () {
       resolve({ channels: JSON.parse(str) })
     } else {
       request({ url: '/user/channels' }).then(result => {
-        localStorage.setItem(JSON.stringify(result))
+        localStorage.setItem(key, JSON.stringify(result.channels))
         resolve(result)
       })
     }
   })
 }
+// 获取全部频道
 export function getAllChennels () {
   return request({
     url: '/channels'
+  })
+}
+// 删除频道api
+export function delChennels (id) {
+  return new Promise(function (resolve, reject) {
+    const key = store.state.user.token ? CACHE_CHANNEL_V : CACHE_CHANNEL_T
+    const channels = JSON.parse(localStorage.getItem(key))
+    // 找到删除的项
+    const index = channels.findIndex(item => item.id === id)
+    if (index > -1) {
+      channels.splice(index, 1) // 删除对应的下标元素
+      localStorage.setItem(key, JSON.stringify(channels)) // 重新写入缓存
+      // 如果执行成功了 我们应该 resolve()
+      resolve() // resolve 可以传参 也可以不传参
+    } else {
+      reject(new Error('没有找到对应的频道'))
+    }
   })
 }
